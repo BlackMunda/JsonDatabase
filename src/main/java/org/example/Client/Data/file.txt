@@ -1,0 +1,2 @@
+-t set -k [person,name] -v "Travis"
+-t set -k ["person","rocket","spaceOrg","scientist","name"] -v "DevLex"

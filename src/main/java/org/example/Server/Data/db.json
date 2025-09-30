@@ -1,0 +1,62 @@
+{
+  "person": {
+    "name": "Elon Musk",
+    "car": {
+      "model": "Tesla Roadster",
+      "year": "2018"
+    },
+    "rocket": {
+      "name": "Falcon 9",
+      "launches": "87",
+      "spaceOrg": {
+        "scientist": {
+          "name": "DevLex"
+        }
+      }
+    }
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Alice",
+      "courses": [
+        {
+          "title": "Mathematics",
+          "credits": 4
+        },
+        {
+          "title": "Physics",
+          "credits": 3
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Bob",
+      "courses": [
+        {
+          "title": "Computer Science",
+          "credits": 5
+        },
+        {
+          "title": "History",
+          "credits": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Charlie",
+      "courses": [
+        {
+          "title": "Biology",
+          "credits": 3
+        },
+        {
+          "title": "Chemistry",
+          "credits": 4
+        }
+      ]
+    }
+  ]
+}

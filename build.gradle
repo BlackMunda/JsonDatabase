@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.beust:jcommander:1.82'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('serverJar', Jar) {
+    archiveBaseName = "server"
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'org.example.Server.Main'
+    }
+}
+
+tasks.register('clientJar', Jar) {
+    archiveBaseName = "client"
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'org.example.Client.Main'
+    }
+}
