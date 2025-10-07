@@ -20,8 +20,10 @@ public class DeleteCommand implements Command {
 
     @Override
     public String execute() {
-        try (FileReader reader = new FileReader("src/main/java/org/example/Server/Data/db.json");
-             FileWriter writer = new FileWriter("src/main/java/org/example/Server/Data/db.json")){
+        try (FileReader reader = new FileReader("/home/dracarys/IdeaProjects/javaD/DatabaseJSON" +
+                "/src/main/java/org/example/Server/data/db.json");
+             FileWriter writer = new FileWriter("/home/dracarys/IdeaProjects/javaD/DatabaseJSON" +
+                     "/src/main/java/org/example/Server/data/db.json")){
             lock.writeLock().lock();
 
             String[] keys = gson.fromJson(key, String[].class);
