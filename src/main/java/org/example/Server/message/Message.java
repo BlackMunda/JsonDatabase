@@ -1,4 +1,4 @@
-package org.example.Server;
+package org.example.Server.message;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,6 +22,24 @@ public class Message {
 
     public Message(String type, JsonArray key, String value, JsonObject jsonValue){
         this(type, key, value, jsonValue, null, null);
+    }
+
+    public Object getActualValue(){
+        if (!(jsonValue == null || jsonValue.isJsonNull())) {
+            return jsonValue;
+        } else if (value != null) {
+            return value;
+        } else if (array != null){
+            return array;
+        } else if (number != null){
+            return number;
+        }
+        return null;
+    }
+
+    @Override
+    public String toString(){
+        return type + " " + key + " " + value;
     }
 
     public Message(String type, JsonArray key, String value){
@@ -80,24 +98,6 @@ public class Message {
 
     public void setNumber(Integer number) {
         this.number = number;
-    }
-
-    public Object getActualValue(){
-        if (!(jsonValue == null || jsonValue.isJsonNull())) {
-            return jsonValue;
-        } else if (value != null) {
-            return value;
-        } else if (array != null){
-            return array;
-        } else if (number != null){
-            return number;
-        }
-        return null;
-    }
-
-    @Override
-    public String toString(){
-        return type + " " + key + " " + value;
     }
 }
 

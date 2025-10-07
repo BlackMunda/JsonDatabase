@@ -1,6 +1,7 @@
-package org.example.Server.Commands;
+package org.example.Server.commands;
 
 import com.google.gson.*;
+import org.example.Server.commands.response.Response;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -10,6 +11,8 @@ public class DeleteCommand implements Command {
     private static JsonObject db;
     private static JsonArray key;
 
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     public DeleteCommand(JsonObject dbObject, JsonArray Key) {
         db = dbObject;
         key = Key;
@@ -17,16 +20,15 @@ public class DeleteCommand implements Command {
 
     @Override
     public String execute() {
-        try (FileReader reader = new FileReader("/home/dracarys/IdeaProjects/javaD" +
-                "/DatabaseJSON/src/main/java/org/example/Server/Data/db.json");
-             FileWriter writer = new FileWriter("/home/dracarys/IdeaProjects/javaD" +
-                     "/DatabaseJSON/src/main/java/org/example/Server/Data/db.json")){
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileReader reader = new FileReader("src/main/java/org/example/Server/Data/db.json");
+             FileWriter writer = new FileWriter("src/main/java/org/example/Server/Data/db.json")){
             lock.writeLock().lock();
 
             String[] keys = gson.fromJson(key, String[].class);
 
-            if (!db.has(keys[0])) return "{\"response\":\"ERROR\",\"reason\":\"No such key\"}";
+            if (!db.has(keys[0])){
+                return gson.toJson(new Response("ERROR", "no such key!!"));
+            }
             else {
 
                 traverse(db);
@@ -35,9 +37,9 @@ public class DeleteCommand implements Command {
                 writer.flush();
                 db = gson.fromJson(reader, JsonObject.class);
             }
-            return "{\"response\":\"OK\"}";
+            return gson.toJson(new Response("Ok", null));
         } catch (IndexOutOfBoundsException | IOException e){
-            return "{\"response\":\"ERROR\",\"reason\":\"No such key\"}";
+            return gson.toJson(new Response("ERROR", "no such key!!"));
         } finally {
             lock.writeLock().unlock();
         }

@@ -1,6 +1,7 @@
-package org.example.Server.Commands;
+package org.example.Server.commands;
 
 import com.google.gson.*;
+import org.example.Server.commands.response.Response;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -46,10 +47,8 @@ public class SetCommand implements Command {
     @Override
     public String execute() {
 
-        try (FileReader reader = new FileReader("/home/dracarys/IdeaProjects/javaD" +
-                "/DatabaseJSON/src/main/java/org/example/Server/Data/db.json");
-             FileWriter writer = new FileWriter("/home/dracarys/IdeaProjects/javaD" +
-                     "/DatabaseJSON/src/main/java/org/example/Server/Data/db.json")){
+        try (FileReader reader = new FileReader("src/main/java/org/example/Server/Data/db.json");
+             FileWriter writer = new FileWriter("src/main/java/org/example/Server/Data/db.json")){
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             lock.writeLock().lock();
@@ -59,9 +58,10 @@ public class SetCommand implements Command {
             gson.toJson(db, writer);
             writer.flush();
             db = gson.fromJson(reader, JsonObject.class);
-            return "{\"response\":\"OK\"}";
+            return gson.toJson(new Response("OK", null));
         } catch (IndexOutOfBoundsException | IOException e) {
-            return "{\"response\":\"ERROR\",\"reason\":\"No such keys\"}";
+            Gson gson = new Gson();
+            return gson.toJson(new Response("OK", "no such key!!"));
         } finally {
             lock.writeLock().unlock();
         }

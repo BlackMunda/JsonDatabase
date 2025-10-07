@@ -1,6 +1,7 @@
-package org.example.Server.Commands;
+package org.example.Server.commands;
 
 import com.google.gson.*;
+import org.example.Server.commands.response.Response;
 
 // TODO : when given nested key, get is returning the last present key if the latter nested one does not exist.
 
@@ -43,25 +44,26 @@ public class GetCommand implements Command {
             String[] keys = gson.fromJson(key, String[].class);
 
             if (!db.has(keys[0])){
-                return "{\"response\":\"ERROR\",\"reason\":\"No such key\"}";
+                return gson.toJson(new Response("ERROR", "no such key!!"));
             } else {
                 JsonElement value = traverse(db);
                 if (value.isJsonObject()) {
-                    return "{\"response\":\"OK\",\"value\":" + value.getAsJsonObject() + "}";
+                    return gson.toJson(new Response("OK", value.getAsString()));
                 } else if (value.isJsonPrimitive()) {
                     var actual = value.getAsJsonPrimitive();
                     if (actual.isString()){
-                        return "{\"response\":\"OK\",\"value\":" + "\"" + actual.getAsString() + "\"}";
+                        return gson.toJson(new Response("OK", actual.getAsString()));
                     }
                     if (actual.isNumber()){
-                        return "{\"response\":\"OK\",\"value\":" + "\"" + actual.getAsNumber() + "\"}";
+                        return gson.toJson(new Response("OK", actual.getAsString()));
                     }
                 } else if (value.isJsonArray()) {
-                    return "{\"response\":\"OK\",\"value\":" + value.getAsJsonArray() + "}";
+                    return gson.toJson(new Response("OK", value.getAsString()));
                 }
             }
         } catch (IndexOutOfBoundsException e){
-            return "{\"response\":\"ERROR\",\"reason\":\"No such key\"}";
+            Gson gson = new Gson();
+            return gson.toJson(new Response("ERROR", "no such key!!"));
         } finally {
             lock.readLock().unlock();
         }

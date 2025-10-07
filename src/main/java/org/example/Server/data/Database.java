@@ -1,4 +1,4 @@
-package org.example.Server;
+package org.example.Server.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,8 +13,7 @@ public class Database {
     private Database() {}
 
     public static JsonObject getInstance() {
-        try (FileReader reader = new FileReader("/home/dracarys/IdeaProjects/javaD" +
-                "/DatabaseJSON/src/main/java/org/example/Server/Data/db.json")){
+        try (FileReader reader = new FileReader("src/main/java/org/example/Server/Data/db.json")){
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             database = gson.fromJson(reader, JsonObject.class);

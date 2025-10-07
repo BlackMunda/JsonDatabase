@@ -1,10 +1,12 @@
-package org.example.Server;
+package org.example.Server.network;
 
 import com.google.gson.*;
-import org.example.Server.Commands.Command;
-import org.example.Server.Commands.DeleteCommand;
-import org.example.Server.Commands.GetCommand;
-import org.example.Server.Commands.SetCommand;
+import org.example.Server.commands.Command;
+import org.example.Server.commands.DeleteCommand;
+import org.example.Server.commands.GetCommand;
+import org.example.Server.commands.SetCommand;
+import org.example.Server.execution.CommandInvoker;
+import org.example.Server.message.Message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,7 +17,7 @@ import java.net.Socket;
 import static org.example.Server.Main.db;
 import static org.example.Server.Main.shouldExit;
 
-public class MultipleClientRunner {
+public class ClientHandler {
 
     public static void runner(Socket socket){
         try (socket;
@@ -103,7 +105,7 @@ public class MultipleClientRunner {
             default -> throw new IllegalStateException("Unexpected value: " + type);
         };
 
-        CommandExecutor executor = new CommandExecutor(command);
+        CommandInvoker executor = new CommandInvoker(command);
         return executor.run();
     }
 }

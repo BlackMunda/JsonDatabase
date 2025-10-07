@@ -1,4 +1,4 @@
-package org.example.Server.Commands;
+package org.example.Server.commands;
 
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

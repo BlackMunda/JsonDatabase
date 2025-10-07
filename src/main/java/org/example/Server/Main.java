@@ -1,6 +1,8 @@
 package org.example.Server;
 
 import com.google.gson.JsonObject;
+import org.example.Server.data.Database;
+import org.example.Server.network.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,8 +12,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class Main {
     static int PORT = 23456;
-    static JsonObject db = Database.getInstance();
-    static boolean shouldExit = false;
+    public static JsonObject db = Database.getInstance();
+    public static boolean shouldExit = false;
 
     public static void main(String[] args){
         System.out.println("Server started!");
@@ -23,7 +25,7 @@ public class Main {
 
                 CompletableFuture<Void> future = CompletableFuture.runAsync(
                         () ->
-                        MultipleClientRunner.runner(socket));
+                        ClientHandler.runner(socket));
             }
         } catch (IOException e) {
             System.out.println("Exception occurred in main");

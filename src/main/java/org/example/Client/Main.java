@@ -3,7 +3,7 @@ package org.example.Client;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.gson.*;
-import org.example.Server.Message;
+import org.example.Server.message.Message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
