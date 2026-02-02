@@ -109,20 +109,40 @@ java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k ["person","rocket","space
 
 ```
 JsonDatabase/
-├── src/main/java/org/example/
-│   ├── server/
-│   │   ├── Server.java          # Main server application
-│   │   ├── RequestHandler.java   # Handles client requests
-│   │   └── Database.java         # JSON database operations
-│   ├── client/
-│   │   └── Client.java           # Client application
-│   └── shared/
-│       ├── Request.java          # Request data model
-│       └── Response.java         # Response data model
 ├── data/
-│   └── db.json                   # JSON database file
+│   └── db.json                     # JSON database file (persistent storage)
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── org/
+│   │   │       └── example/
+│   │   │           ├── Server/
+│   │   │           │   ├── Main.java              # Server entry point
+│   │   │           │   ├── network/
+│   │   │           │   │   └── ClientHandler.java # Handles socket clients
+│   │   │           │   ├── commands/
+│   │   │           │   │   ├── SetCommand.java
+│   │   │           │   │   └── DeleteCommand.java
+│   │   │           │   └── data/
+│   │   │           │       └── Database.java      # JSON DB logic
+│   │   │           │
+│   │   │           └── Client/
+│   │   │               ├── Main.java              # Client entry point
+│   │   │               └── data/
+│   │   │                   └── file.txt           # Optional command input file
+│   │   │
+│   │   └── resources/                              # (optional)
+│   │
+│   └── test/
+│       └── java/                                   # (optional tests)
+│
 ├── build.gradle
-└── settings.gradle
+├── settings.gradle
+├── gradlew
+├── gradlew.bat
+└── README.md
+
 ```
 
 ## Usage Examples
@@ -131,21 +151,21 @@ JsonDatabase/
 
 **Set a value:**
 ```bash
-java -jar client.jar -t set -k "1" -v "Hello world!"
+java -jar client.jar -t set -k ["1"] -v "Hello world!"
 # Sent: {"type":"set","key":"1","value":"Hello world!"}
 # Received: {"response":"OK"}
 ```
 
 **Get a value:**
 ```bash
-java -jar client.jar -t get -k "1"
+java -jar client.jar -t get -k ["1"]
 # Sent: {"type":"get","key":"1"}
 # Received: {"response":"OK","value":"Hello world!"}
 ```
 
 **Delete a value:**
 ```bash
-java -jar client.jar -t delete -k "1"
+java -jar client.jar -t delete -k ["1"]
 # Sent: {"type":"delete","key":"1"}
 # Received: {"response":"OK"}
 ```
@@ -158,7 +178,7 @@ Create `setFile.json`:
 ```json
 {
   "type": "set",
-  "key": "person",
+  "key": ["person"],
   "value": {
     "name": "Elon Musk",
     "car": {
@@ -174,7 +194,7 @@ Create `setFile.json`:
 ```
 
 ```bash
-java -jar client.jar -in setFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -in setFile.json
 # Received: {"response":"OK"}
 ```
 
@@ -189,7 +209,7 @@ Create `getFile.json`:
 ```
 
 ```bash
-java -jar client.jar -in getFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -in getFile.json
 # Received: {"response":"OK","value":"Elon Musk"}
 ```
 
@@ -205,7 +225,7 @@ Create `updateFile.json`:
 ```
 
 ```bash
-java -jar client.jar -in updateFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -in updateFile.json
 # Received: {"response":"OK"}
 ```
 
@@ -223,13 +243,13 @@ Result: Only `year` is deleted, `car` object remains with just `model`.
 
 ```bash
 # Short form
-java -jar client.jar -t set -k "key" -v "value"
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k "key" -v "value"
 
 # Using JSON file
-java -jar client.jar -in request.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -in request.json
 
 # Exit the server
-java -jar client.jar -t exit
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t exit
 ```
 
 **Arguments:**
