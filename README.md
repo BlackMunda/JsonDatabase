@@ -79,17 +79,30 @@ git clone https://github.com/BlackMunda/JsonDatabase.git
 cd JsonDatabase
 
 # Build the project
-./gradlew build
+./gradlew clean serverJar clientJar
 
 # Start the server (runs in background)
-java -jar server.jar
+java -jar build/libs/server-1.0-SNAPSHOT.jar
 # Server started!
 
 # In a new terminal, run client commands
-java -jar client.jar -t set -k "1" -v "Hello world!"
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k ["person","rocket","spaceOrg","scientist","name"] -v "DevLex"
 # Client started!
-# Sent: {"type":"set","key":"1","value":"Hello world!"}
-# Received: {"response":"OK"}
+# Sent: {
+  "type": "set",
+  "key": [
+    "person",
+    "rocket",
+    "spaceOrg",
+    "scientist",
+    "name"
+  ],
+  "value": "DevLex"
+  }
+# Received: {
+  "response": "OK"
+  }
+
 ```
 
 ## Project Structure
