@@ -3,8 +3,10 @@ package org.example.Server.commands;
 import com.google.gson.*;
 import org.example.Server.commands.response.Response;
 
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.nio.file.*;
+
+import java.io.Reader;
+import java.io.Writer;
 import java.io.IOException;
 
 // setting nested values but setting new for json objects (FIXED)
@@ -18,8 +20,11 @@ public class SetCommand implements Command {
     private static JsonArray array;
     private static Integer number;
 
+    final Path dbPath = Paths.get(System.getProperty("user.dir"))
+            .resolve("data/db.json");
 
-    public SetCommand(JsonObject dbObject, JsonArray Key, String Value, JsonObject jSonValue, JsonArray Array, Integer Number) {
+    public SetCommand(JsonObject dbObject, JsonArray Key, String Value, JsonObject jSonValue, JsonArray Array,
+            Integer Number) {
         db = dbObject;
         key = Key;
         value = Value;
@@ -46,11 +51,9 @@ public class SetCommand implements Command {
 
     @Override
     public String execute() {
-
-        try (FileReader reader = new FileReader("/home/dracarys/IdeaProjects/javaD/DatabaseJSON/" +
-                "src/main/java/org/example/Server/data/db.json");
-             FileWriter writer = new FileWriter("/home/dracarys/IdeaProjects/javaD/DatabaseJSON/" +
-                     "src/main/java/org/example/Server/data/db.json")){
+        try (
+                Reader reader = Files.newBufferedReader(dbPath);
+                Writer writer = Files.newBufferedWriter(dbPath)) {
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             lock.writeLock().lock();
@@ -72,26 +75,30 @@ public class SetCommand implements Command {
     static int count = 0;
     static String prevKey = null;
     static JsonObject lastJsonObj;
-    public static void traverse(JsonObject object){
+
+    public static void traverse(JsonObject object) {
         Gson gson = new GsonBuilder().create();
         String[] keys = gson.fromJson(key, String[].class);
         String Key = keys[count].trim();
-        if (lastJsonObj == null) lastJsonObj = db;
+        if (lastJsonObj == null)
+            lastJsonObj = db;
 
         try {
             JsonElement Value = object.get(Key);
             prevKey = Key;
 
-            if (Value.isJsonObject()){
+            if (Value.isJsonObject()) {
                 lastJsonObj = Value.getAsJsonObject();
-                if (!(keys.length > 1)) lastJsonObj = object;
+                if (!(keys.length > 1))
+                    lastJsonObj = object;
                 count++;
-                if (keys.length > count && keys.length > 1) traverse((JsonObject) Value);
+                if (keys.length > count && keys.length > 1)
+                    traverse((JsonObject) Value);
                 else {
                     addValue(Key);
                     count = 0;
                 }
-            } else{
+            } else {
                 addValue(Key);
                 count = 0;
             }
@@ -101,7 +108,7 @@ public class SetCommand implements Command {
             newJsonObj.add(prevKey, Value);
             count++;
 
-            if (keys.length == count){
+            if (keys.length == count) {
                 addValue(prevKey);
             } else {
                 lastJsonObj.add(prevKey, newJsonObj);
@@ -112,7 +119,7 @@ public class SetCommand implements Command {
         }
     }
 
-    public static void addValue(String Key){
+    public static void addValue(String Key) {
         if (!(jsonValue == null || jsonValue.isJsonNull())) {
             lastJsonObj.add(Key, jsonValue);
         } else if (value != null) {

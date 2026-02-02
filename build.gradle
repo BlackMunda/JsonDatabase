@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'org.example'
@@ -12,6 +13,7 @@ repositories {
 dependencies {
     implementation 'com.beust:jcommander:1.82'
     implementation 'com.google.code.gson:gson:2.10.1'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -21,18 +23,25 @@ test {
     useJUnitPlatform()
 }
 
-tasks.register('serverJar', Jar) {
-    archiveBaseName = "server"
+tasks.register('serverJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveBaseName.set("server")
+    archiveClassifier.set("")
+    configurations = [project.configurations.runtimeClasspath]
+
     from sourceSets.main.output
     manifest {
         attributes 'Main-Class': 'org.example.Server.Main'
     }
 }
 
-tasks.register('clientJar', Jar) {
-    archiveBaseName = "client"
+tasks.register('clientJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveBaseName.set("client")
+    archiveClassifier.set("")
+    configurations = [project.configurations.runtimeClasspath]
+
     from sourceSets.main.output
     manifest {
         attributes 'Main-Class': 'org.example.Client.Main'
     }
 }
+
