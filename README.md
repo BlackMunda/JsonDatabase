@@ -145,118 +145,80 @@ JsonDatabase/
 
 ```
 
+
+### 2. Nested JSON Structures
 ## Usage Examples
 
 ### 1. Simple Key-Value Operations
 
 **Set a value:**
 ```bash
-java -jar client.jar -t set -k ["1"] -v "Hello world!"
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k "1" -v "Hello world!"
 # Sent: {"type":"set","key":"1","value":"Hello world!"}
 # Received: {"response":"OK"}
 ```
 
 **Get a value:**
 ```bash
-java -jar client.jar -t get -k ["1"]
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t get -k "1"
 # Sent: {"type":"get","key":"1"}
 # Received: {"response":"OK","value":"Hello world!"}
 ```
 
 **Delete a value:**
 ```bash
-java -jar client.jar -t delete -k ["1"]
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t delete -k "1"
 # Sent: {"type":"delete","key":"1"}
 # Received: {"response":"OK"}
 ```
 
-### 2. Nested JSON Structures
+### 2. Nested JSON Structures (using array keys)
 
-**Create a nested object using JSON file:**
-
-Create `setFile.json`:
-```json
-{
-  "type": "set",
-  "key": ["person"],
-  "value": {
-    "name": "Elon Musk",
-    "car": {
-      "model": "Tesla Roadster",
-      "year": "2018"
-    },
-    "rocket": {
-      "name": "Falcon 9",
-      "launches": "87"
-    }
-  }
-}
-```
-
+**Set a nested object:**
 ```bash
-java -jar build/libs/client-1.0-SNAPSHOT.jar -in setFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k "person" -v "{\"name\":\"Elon Musk\",\"car\":{\"model\":\"Tesla Roadster\",\"year\":\"2018\"}}"
 # Received: {"response":"OK"}
 ```
 
-**Access nested values with key arrays:**
-
-Create `getFile.json`:
-```json
-{
-  "type": "get",
-  "key": ["person", "name"]
-}
-```
-
+**Access nested values with array key paths:**
 ```bash
-java -jar build/libs/client-1.0-SNAPSHOT.jar -in getFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t get -k "[\"person\",\"name\"]"
 # Received: {"response":"OK","value":"Elon Musk"}
 ```
 
 **Update nested values:**
-
-Create `updateFile.json`:
-```json
-{
-  "type": "set",
-  "key": ["person", "rocket", "launches"],
-  "value": "88"
-}
-```
-
 ```bash
-java -jar build/libs/client-1.0-SNAPSHOT.jar -in updateFile.json
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k "[\"person\",\"car\",\"year\"]" -v "2020"
 # Received: {"response":"OK"}
 ```
 
 **Delete nested values:**
-```json
-{
-  "type": "delete",
-  "key": ["person", "car", "year"]
-}
+```bash
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t delete -k "[\"person\",\"car\",\"year\"]"
+# Received: {"response":"OK"}
 ```
 
 Result: Only `year` is deleted, `car` object remains with just `model`.
 
-### 3. Command-Line Arguments
-
+### 3. Command-Line Arguments (using JCommander)
 ```bash
-# Short form
+# Set operation
 java -jar build/libs/client-1.0-SNAPSHOT.jar -t set -k "key" -v "value"
 
-# Using JSON file
-java -jar build/libs/client-1.0-SNAPSHOT.jar -in request.json
+# Get operation
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t get -k "key"
+
+# Delete operation
+java -jar build/libs/client-1.0-SNAPSHOT.jar -t delete -k "key"
 
 # Exit the server
 java -jar build/libs/client-1.0-SNAPSHOT.jar -t exit
 ```
 
 **Arguments:**
-- `-t`, `--type` - Request type: `set`, `get`, `delete`, or `exit`
-- `-k`, `--key` - The key (string or will be parsed as array)
-- `-v`, `--value` - The value to set
-- `-in`, `--input-file` - Path to JSON file containing request
+- `-t` - Request type: `set`, `get`, `delete`, or `exit`
+- `-k` - The key (string or JSON array like `["person","name"]`)
+- `-v` - The value to set (can be JSON string)
 
 ## How It Works
 
